@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <zlib.h>
+#include <libgen.h>
 
 
 #include "link_info.h"
@@ -82,7 +83,7 @@ static int execute(char *const argv[])
 static bool from_cache(const std::string& hash_str, const std::string& output_path)
 {
     std::string dir = s_config.m_cache_path + "/" + hash_str + "/";
-    std::string path = dir + basename(output_path.c_str());
+    std::string path = dir + basename(const_cast<char*>(output_path.c_str()));
     struct stat dir_stat;
     if ((stat(path.c_str(), &dir_stat) != 0)) {
         std::cout << "Cache file for " << output_path << " doesn't exist." << std::endl;
@@ -103,7 +104,7 @@ static void to_cache(const std::string& hash_str, const std::string& output_path
     }
 
     std::string dir = s_config.m_cache_path + "/" + hash_str + "/";
-    std::string path = dir + basename(output_path.c_str());
+    std::string path = dir + basename(const_cast<char*>(output_path.c_str()));
     struct stat dir_stat;
     if ((stat(dir.c_str(), &dir_stat) != 0)) {
         status = mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
