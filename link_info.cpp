@@ -40,7 +40,5 @@ std::string link_info::hash()
     auto file_hash_list = hash_caculator.calculate_hash();
     std::copy(file_hash_list.begin(), file_hash_list.end(), string_list.begin() + linker_params.size());
 
-    auto final_hash = HashUtil::hash_string_list(string_list);
-    //  63cc62df8349fbc6994ff58f0bbebf5
     return  HashUtil::hash_string_list(string_list);
 }
