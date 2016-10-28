@@ -121,6 +121,29 @@ static void to_cache(const std::string& hash_str, const std::string& output_path
     dst << src.rdbuf();
 }
 
+// Check if the given param string is path to the excutable file of ccache.
+static bool is_ccache(const char param[]) {
+    /*
+    struct stat file_stat;
+    if ((stat(param, &file_stat) != 0)) {
+        // Doesn't exist?
+        return false;
+    }
+
+    if (!(file_stat.st_mode & S_IXUSR)) {
+        // Not executable.
+        return false;
+    }
+    */
+
+    // FIXME: Make a more completed version to check ccache.
+    if (strstr(param, "ccache") != nullptr) {
+        return true;
+    }
+
+    return false;
+}
+
 int main(int argc, char *argv[])
 {
     if (argc > 1 && strcmp("-v", argv[1]) == 0) {
@@ -151,6 +174,11 @@ int main(int argc, char *argv[])
         }
     }
     s_config.m_cache_path = std::move(lcache_dir_str);
+
+    if (argc > 0 && is_ccache(argv[1])) {
+        argc -= 1;
+        argv += 1;
+    }
 
     link_info info = parse(argc - 1, argv + 1);
     std::string hash = info.hash();
