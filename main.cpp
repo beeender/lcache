@@ -104,10 +104,16 @@ static void to_cache(const std::string& hash_str, const std::string& output_path
         exit(status);
     }
 
+    struct stat output_stat;
+    if (stat(output_path.c_str(), &output_stat) != 0 || output_stat.st_size == 0) {
+        // Something is wrong. The output file doensn't exist or its size is 0.
+        return;
+    }
+
     std::string dir = s_config.m_cache_path + "/" + hash_str + "/";
     std::string path = dir + basename(const_cast<char*>(output_path.c_str()));
     struct stat dir_stat;
-    if ((stat(dir.c_str(), &dir_stat) != 0)) {
+    if (stat(dir.c_str(), &dir_stat) != 0) {
         status = mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         if (status) {
             std::cerr << "Failed to create directory " << dir << "." << std::endl;
