@@ -15,6 +15,7 @@
 
 #include "link_info.h"
 #include "config.h"
+#include "version.h"
 
 static Config s_config;
 
@@ -115,13 +116,18 @@ static void to_cache(const std::string& hash_str, const std::string& output_path
     }
 
     std::ifstream  src(output_path, std::ios::binary);
-    std::ofstream  dst(path,   std::ios::binary);
+    std::ofstream  dst(path, std::ios::binary);
 
     dst << src.rdbuf();
 }
 
 int main(int argc, char *argv[])
 {
+    if (argc > 1 && strcmp("-v", argv[1]) == 0) {
+        std::cout << "lcache version: " << VERSION << std::endl;
+        exit(0);
+    }
+
     // Set the path to store cached files
     std::string lcache_dir_str;
     char* lcache_dir_env = getenv("LCACHE_DIR");
